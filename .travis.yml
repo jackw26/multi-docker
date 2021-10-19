@@ -6,7 +6,7 @@ before_install:
     - docker build -t jackandcheese/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-    - docker run -e CI=true jackandcheese.react-test npm test
+    - docker run -e CI=true jackandcheese/react-test npm test
 
 after_success:
     - docker build -t jackandcheese/multi-client ./client
