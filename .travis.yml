@@ -1,0 +1,22 @@
+sudo: required
+services:
+    - docker
+
+before_instal:
+    -docker build -t jackandcheese/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true jackandcheese.react-test npm test
+
+after_success:
+    - docker build -t jackandcheese/multi-client ./client
+    - docker build -t jackandcheese/multi-nginx ./nginx
+    - docker build -t jackandcheese/multi-server ./server
+    - docker build -t jackandcheese/multi-worker ./worker
+    # Log in to the Docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # Take those images and push them the docker hub
+    - docker push jackandcheese/multi-client
+    - docker push  jackandcheese/multi-nginx
+    - docker push  jackandcheese/multi-server
+    - docker push jackandcheese/multi-worker
